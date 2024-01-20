@@ -1,0 +1,6 @@
+{
+    "ignore": ["./__test__/**/*", "README", "./**/*.json"],
+    "events": {
+        "start": "clear || cls"
+    }
+}
