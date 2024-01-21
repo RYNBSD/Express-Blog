@@ -2,7 +2,7 @@ import type { IncomingHttpHeaders } from "node:http";
 import type { Request, Response, NextFunction } from "express";
 import { VALUES } from "../constant/index.js";
 
-export async function handleAsync(
+export function handleAsync(
     fn: (req: Request, res: Response, next: NextFunction) => Promise<void>
 ) {
     return async (

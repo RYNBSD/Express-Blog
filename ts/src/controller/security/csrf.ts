@@ -12,9 +12,7 @@ export const csrf = {
 
         const { csrf } = util
         const { token, secret } = csrf.generate();
-
-        req.session.csrf = { secret: "" };
-        req.session.csrf.secret = secret;
+        req.session.csrf = { secret };
 
         res.status(StatusCodes.OK)
             .setHeader(KEYS.HTTP.HEADERS.CSRF, token);
