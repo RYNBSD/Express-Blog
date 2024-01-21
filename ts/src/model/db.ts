@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import type { Tables } from "../types/index.js";
-import { title } from "process";
 
 export const User = sequelize.define<Tables["User"]>(
     "user",
@@ -157,7 +156,7 @@ export const Error = sequelize.define<Tables["Error"]>(
             autoIncrement: true,
         },
         status: {
-            type: DataTypes.ENUM(),
+            type: DataTypes.SMALLINT.UNSIGNED,
             allowNull: false,
         },
         message: {

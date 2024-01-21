@@ -21,20 +21,25 @@ export class FileConverter {
 
         return isImage
             ? await sharp(image)
-                  .webp({ quality: 100, alphaQuality: 100 })
+                  .webp({ quality: 100 })
                   .resize({ width: 1280, height: 720, fit: "cover" })
                   .toBuffer()
             : null;
     }
 
     async convert() {
-        return (
-            await Promise.allSettled(
-                this.files.map(async (file) => await this.toWebp(file))
-            )
-        ).filter(
-            (promise) =>
-                promise.status === "fulfilled" && promise.value !== null
+        const converted: Buffer[] = [];
+
+        const promises = this.files.map(
+            async (file) => await this.toWebp(file)
         );
+        const webps = await Promise.allSettled(promises);
+
+        webps.forEach((webp) => {
+            if (webp.status === "fulfilled" && webp.value !== null)
+                converted.push(webp.value);
+        });
+
+        return converted;
     }
 }

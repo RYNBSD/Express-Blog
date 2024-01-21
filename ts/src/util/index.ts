@@ -10,7 +10,7 @@ export const util = {
             }
         };
     },
-    nowSecond: () => Math.floor(Date.now() / 1000)
+    nowSecond: () => Math.floor(Date.now() / 1000),
 };
 
 type HandleAsyncFn = (
