@@ -1,5 +1,3 @@
-const [{ upload }] = await Promise.all([import("./upload.js")]);
+const [{ upload }, { db }] = await Promise.all([import("./upload.js"), import("./db.js")]);
 
-export const config = {
-    upload,
-} as const;
+export const config = { upload, db } as const;
