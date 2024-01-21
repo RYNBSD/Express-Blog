@@ -30,7 +30,7 @@ global.IS_PRODUCTION = ENV.NODE.ENV === "production"
 global.__root = process.cwd()
 
 app.use("/", router)
-app.use(express.static(path.join(__root, KEYS.PUBLIC)))
+app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)))
 app.use("*", (_, res) => res.status(StatusCodes.NOT_FOUND))
 app.use((error: Error, _req: Request, _res: Response, next: NextFunction) => next(error))
 
