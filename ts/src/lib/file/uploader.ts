@@ -12,12 +12,12 @@ export class FileUploader {
     }
 
     private generateUniqueFileName() {
-        return util.nowSecond() + "_" + randomUUID() + ".webp";
+        return util.nowInSecond() + "_" + randomUUID() + ".webp";
     }
 
     private async write(file: Buffer) {
         const uri = this.generateUniqueFileName();
-        const fullPath = path.join(__root, KEYS.PUBLIC, uri);
+        const fullPath = path.join(__root, KEYS.GLOBAL.PUBLIC, uri);
         await writeFile(fullPath, file);
         return uri;
     }
