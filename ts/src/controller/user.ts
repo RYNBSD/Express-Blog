@@ -1,3 +1,3 @@
-import { Router } from "express";
+export const user = {
 
-export const user = Router()
+} as const
