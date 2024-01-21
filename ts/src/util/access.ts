@@ -9,25 +9,6 @@ const IV_LENGTH = 16;
 const ALGORITHM = "aes-256-cbc";
 const EXPIRED = 5;
 
-/**
- * How Access Token work?
- * First the encrypt id we need key and iv
- * Step 1: stringify id with a timer like: 5 minutes later
- * step 2: generate random key
- * step 3: generate random iv
- * step 4: encrypt id
- * step 5: return id as token in base64 and iv in hex and key
- * step 6: store key in session
- * step 7: store iv in database to validate later
- * step 8: send iv to email box for the user
- * step 9: send token in header with the response
- *
- * Client side should store token after the user set iv and get response with 2xx the user go to password reset password,
- * after setting the new password resend the iv with the token as in docs with the new password and confirm password,
- *
- * After that the server verify if sent iv is  already verified if true decrypt token else server or user error
- */
-
 //? Create Access Token for some parts and verify the token
 export const access = {
     token(id: string) {

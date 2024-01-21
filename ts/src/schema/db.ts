@@ -9,9 +9,9 @@ const IdInt = z.object({
 }).strict()
 
 export const User = z.object({
-    username: z.string().trim().max(50),
-    email: z.string().trim().max(50),
-    password: z.string().trim().max(70),
+    username: z.string().trim().min(1).max(50),
+    email: z.string().trim().email().max(50),
+    password: z.string().trim().min(8).max(70),
     picture: z.string().trim().max(70)
 }).merge(IdUUID).strict()
 
