@@ -1,11 +1,6 @@
-const [{ auth }, { user }, { blog }] = await Promise.all([
-    import("./auth.js"),
-    import("./user.js"),
-    import("./blog.js"),
+const [{ api }, { security }] = await Promise.all([
+    import("./api/index.js"),
+    import("./security/index.js")
 ]);
 
-export const controller = {
-    auth,
-    user,
-    blog,
-} as const;
+export const controller = { api, security } as const;

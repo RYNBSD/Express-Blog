@@ -1,6 +1,6 @@
 import type { Request, Response } from "express"
-import { schema } from "../schema/index.js"
-import { util } from "../util/index.js"
+import { schema } from "../../schema/index.js"
+import { util } from "../../util/index.js"
 import { StatusCodes } from "http-status-codes"
 
 export const auth =  {
