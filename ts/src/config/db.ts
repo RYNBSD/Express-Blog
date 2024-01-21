@@ -1,18 +1,24 @@
 import { Sequelize } from "sequelize";
+import { ENV } from "../constant/index.js";
 
 export const db = {
     async connect() {
-        global.sequelize = new Sequelize("blog", "postgres", "password", {
-            host: "localhost",
-            dialect: "postgres",
-            logging: (sql, timing) => {
-                if (IS_PRODUCTION) return false;
+        global.sequelize = new Sequelize(
+            ENV.SEQUELIZE.DB_DATABASE,
+            ENV.SEQUELIZE.DB_USERNAME,
+            ENV.SEQUELIZE.DB_PASSWORD,
+            {
+                host: ENV.SEQUELIZE.DB_HOST,
+                dialect: "postgres",
+                logging: (sql, timing) => {
+                    if (IS_PRODUCTION) return false;
 
-                console.log(`${sql}`.black.bgWhite);
-                console.log(`${timing} ms`.bgYellow.black);
-            },
-            benchmark: !IS_PRODUCTION,
-        });
+                    console.log(`${sql}`.black.bgWhite);
+                    console.log(`${timing} ms`.bgYellow.black);
+                },
+                benchmark: !IS_PRODUCTION,
+            }
+        );
         await global.sequelize.authenticate();
     },
     async close() {
