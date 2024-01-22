@@ -1,9 +1,11 @@
 import type { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { serialize } from "cookie";
 import { schema } from "../../schema/index.js";
 import { util } from "../../util/index.js";
-import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
 import { lib } from "../../lib/index.js";
+import { KEYS, VALUES } from "../../constant/index.js";
 
 export const auth = {
     async signUp(req: Request, res: Response) {
@@ -38,31 +40,29 @@ export const auth = {
         res.status(StatusCodes.CREATED);
     },
     async signIn(req: Request, res: Response) {
-        const { SignIn } = schema.req.auth
-        const { email, password } = SignIn.parse(req.body)
+        const { SignIn } = schema.req.auth;
+        const { email, password } = SignIn.parse(req.body);
 
-        const { User } = model.db
+        const { User } = model.db;
         const user = await User.findOne({
             attributes: ["id", "username", "picture", "password"],
             where: { email },
             limit: 1,
             plain: true,
-        })
-        if (user === null)
-            throw new Error("User not found")
+        });
+        if (user === null) throw new Error("User not found");
 
-        const hash = user.dataValues.password
-        const { bcrypt } = util
-        const isPasswordValid = bcrypt.compare(password, hash)
-        if (!isPasswordValid)
-            throw new Error("Password incorrect")
+        const hash = user.dataValues.password;
+        const { bcrypt } = util;
+        const isPasswordValid = bcrypt.compare(password, hash);
+        if (!isPasswordValid) throw new Error("Password incorrect");
 
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        delete user.dataValues.password
+        delete user.dataValues.password;
 
         res.status(StatusCodes.OK).json({
-            user: user.dataValues
+            user: user.dataValues,
         });
     },
     async signOut(req: Request, res: Response) {
@@ -73,7 +73,43 @@ export const auth = {
         res.status(StatusCodes.OK);
     },
     async me(req: Request, res: Response) {
-        res.status(StatusCodes.OK);
+        const { getHeader } = util;
+        const authorization = getHeader(req.headers, "authorization");
+        if (authorization instanceof Array || authorization.length === 0)
+            throw new Error("Unauthorize");
+
+        const token = authorization.split(" ")[1] ?? "";
+        if (token.length === 0) throw new Error("Unauthorized");
+
+        const { jwt } = util;
+        const id = (jwt.verify(token) as string | null) ?? "";
+        if (id.length === 0) throw new Error("Invalid token");
+
+        const { User } = model.db;
+        const user = await User.findOne({
+            attributes: ["id", "username", "picture"],
+            where: { id },
+            limit: 1,
+            plain: true,
+        });
+        if (user === null) throw new Error("User not found");
+
+        const newToken = jwt.sign(id);
+
+        res.status(StatusCodes.OK)
+            .setHeader(
+                "Set-Cookie",
+                serialize(KEYS.COOKIE.JWT, newToken, {
+                    httpOnly: IS_PRODUCTION,
+                    secure: IS_PRODUCTION,
+                    sameSite: IS_PRODUCTION,
+                    path: "/",
+                    maxAge: VALUES.TIME.MONTH,
+                })
+            )
+            .json({
+                user: user.dataValues,
+            });
     },
     async forgotPassword(req: Request, res: Response) {
         res.status(StatusCodes.OK);
