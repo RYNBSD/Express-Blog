@@ -69,9 +69,9 @@ await db.init();
 app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));
 app.use("*", (_, res) => res.status(StatusCodes.NOT_FOUND));
-app.use((error: Error, _req: Request, res: Response, _next: NextFunction) =>
+app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) =>
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: error.message,
+        message: error instanceof Error ? error.message : error,
     })
 );
 
