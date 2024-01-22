@@ -70,9 +70,12 @@ app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));
 app.use("*", (_, res) => res.status(StatusCodes.NOT_FOUND));
 app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) =>
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        message: error instanceof Error ? error.message : error,
-    })
+    res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .json({
+            message: error instanceof Error ? error.message : error,
+        })
+        .end()
 );
 
 process.on("unhandledRejection", (error) => {

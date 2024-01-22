@@ -10,9 +10,11 @@ export function handleAsync(
         try {
             await fn(req, res, next);
         } catch (error) {
-            res.status(StatusCodes.BAD_REQUEST).json({
-                message: error instanceof Error ? error.message : error,
-            });
+            res.status(StatusCodes.BAD_REQUEST)
+                .json({
+                    message: error instanceof Error ? error.message : error,
+                })
+                .end();
         }
     };
 }

@@ -37,7 +37,7 @@ export const auth = {
             { fields: ["username", "email", "password", "picture"] }
         );
 
-        res.status(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).end();
     },
     async signIn(req: Request, res: Response) {
         const { SignIn } = schema.req.auth;
@@ -78,14 +78,15 @@ export const auth = {
             )
             .json({
                 user: user.dataValues,
-            });
+            })
+            .end();
     },
     async signOut(req: Request, res: Response) {
         req.session.access = { key: "", iv: "" };
         req.session.csrf = { secret: "" };
         req.session.user = { id: "" };
 
-        res.status(StatusCodes.OK);
+        res.status(StatusCodes.OK).end();
     },
     async me(req: Request, res: Response) {
         const { getHeader } = util;
@@ -125,6 +126,7 @@ export const auth = {
             )
             .json({
                 user: user.dataValues,
-            });
+            })
+            .end();
     },
 } as const;

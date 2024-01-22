@@ -10,15 +10,16 @@ export const csrf = {
         if (checkSecret.length > 0)
             throw new Error("CSRF Token already exists");
 
-        const { csrf } = util
+        const { csrf } = util;
         const { token, secret } = csrf.generate();
         req.session.csrf = { secret };
 
         res.status(StatusCodes.OK)
-            .setHeader(KEYS.HTTP.HEADERS.CSRF, token);
+            .setHeader(KEYS.HTTP.HEADERS.CSRF, token)
+            .end();
     },
     async delete(req: Request, res: Response) {
         req.session.csrf = { secret: "" };
-        res.status(StatusCodes.OK);
+        res.status(StatusCodes.OK).end();
     },
 } as const;
