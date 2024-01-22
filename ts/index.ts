@@ -63,8 +63,8 @@ app.use(
 
 const { db } = config
 await db.connect()
-await db.init()
 const { router } = await import("./src/router/index.js")
+await db.init()
 
 app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));

@@ -28,6 +28,7 @@ export const User = sequelize.define<Tables["User"]>(
     },
     {
         timestamps: true,
+        tableName: "user"
     }
 );
 
@@ -58,6 +59,7 @@ export const Blog = sequelize.define<Tables["Blog"]>(
     },
     {
         timestamps: true,
+        tableName: "blog"
     }
 );
 
@@ -82,7 +84,7 @@ export const BlogImages = sequelize.define<Tables["BlogImages"]>(
             },
         },
     },
-    { createdAt: true, updatedAt: false }
+    { createdAt: true, updatedAt: false, tableName: "blogImages" }
 );
 
 export const BlogLikes = sequelize.define<Tables["BlogLikes"]>(
@@ -110,7 +112,7 @@ export const BlogLikes = sequelize.define<Tables["BlogLikes"]>(
             }
         }
     },
-    { createdAt: true, updatedAt: false }
+    { createdAt: true, updatedAt: false, tableName: "blogLikes" }
 );
 
 export const BlogComments = sequelize.define<Tables["BlogComments"]>(
@@ -144,6 +146,7 @@ export const BlogComments = sequelize.define<Tables["BlogComments"]>(
     },
     {
         timestamps: true,
+        tableName: "blogComments"
     }
 );
 
@@ -171,5 +174,6 @@ export const Error = sequelize.define<Tables["Error"]>(
     },
     {
         timestamps: true,
+        tableName: "error"
     }
 );
