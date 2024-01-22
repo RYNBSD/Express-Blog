@@ -8,7 +8,9 @@
         "start": "node ./js/index.js",
         "dev": "nodemon ./ts/index.ts",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "lint:fix": "eslint . --fix",
+        "code:check": "yarn lint && tsc",
+        "code:push": "yarn code:check && git push -u origin main"
     },
     "engines": {
         "node": "16.19.0"

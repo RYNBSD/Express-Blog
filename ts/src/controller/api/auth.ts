@@ -61,9 +61,23 @@ export const auth = {
         // @ts-ignore
         delete user.dataValues.password;
 
-        res.status(StatusCodes.OK).json({
-            user: user.dataValues,
-        });
+        const { jwt } = util
+        const newToken = jwt.sign(user.dataValues.id);
+
+        res.status(StatusCodes.OK)
+            .setHeader(
+                "Set-Cookie",
+                serialize(KEYS.COOKIE.JWT, newToken, {
+                    httpOnly: IS_PRODUCTION,
+                    secure: IS_PRODUCTION,
+                    sameSite: IS_PRODUCTION,
+                    path: "/",
+                    maxAge: VALUES.TIME.MONTH,
+                })
+            )
+            .json({
+                user: user.dataValues,
+            });
     },
     async signOut(req: Request, res: Response) {
         req.session.access = { key: "", iv: "" };
