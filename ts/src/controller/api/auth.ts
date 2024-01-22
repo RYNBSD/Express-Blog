@@ -61,8 +61,9 @@ export const auth = {
         // @ts-ignore
         delete user.dataValues.password;
 
-        const { jwt } = util
+        const { jwt } = util;
         const newToken = jwt.sign(user.dataValues.id);
+        req.session.user = { id: user.dataValues.id }
 
         res.status(StatusCodes.OK)
             .setHeader(
@@ -109,6 +110,7 @@ export const auth = {
         if (user === null) throw new Error("User not found");
 
         const newToken = jwt.sign(id);
+        req.session.user = { id };
 
         res.status(StatusCodes.OK)
             .setHeader(
@@ -125,7 +127,7 @@ export const auth = {
                 user: user.dataValues,
             });
     },
-    async forgotPassword(req: Request, res: Response) {
+    async forgotPassword(_req: Request, res: Response) {
         res.status(StatusCodes.OK);
     },
 } as const;
