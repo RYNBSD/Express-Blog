@@ -52,7 +52,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            maxAge: VALUES.TIME.MONTH,
+            maxAge: VALUES.TIME.DAY,
             httpOnly: IS_PRODUCTION,
             sameSite: IS_PRODUCTION,
             secure: IS_PRODUCTION,
@@ -61,16 +61,18 @@ app.use(
     })
 );
 
-const { db } = config
-await db.connect()
-const { router } = await import("./src/router/index.js")
-await db.init()
+const { db } = config;
+await db.connect();
+const { router } = await import("./src/router/index.js");
+await db.init();
 
 app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));
 app.use("*", (_, res) => res.status(StatusCodes.NOT_FOUND));
-app.use((error: Error, _req: Request, _res: Response, next: NextFunction) =>
-    next(error)
+app.use((error: Error, _req: Request, res: Response, _next: NextFunction) =>
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        message: error.message,
+    })
 );
 
 process.on("unhandledRejection", (error) => {
