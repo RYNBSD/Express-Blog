@@ -13,7 +13,6 @@ import { StatusCodes } from "http-status-codes";
 import responseTime from "response-time";
 import { ENV, KEYS, VALUES } from "./src/constant/index.js";
 import { config } from "./src/config/index.js";
-import { router } from "./src/router/index.js";
 import { fileURLToPath } from "url";
 import path from "path";
 
@@ -49,7 +48,7 @@ app.use(helmet());
 app.use(hpp());
 app.use(
     session({
-        secret: "",
+        secret: ENV.SESSION.SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: {
@@ -61,6 +60,11 @@ app.use(
         },
     })
 );
+
+const { db } = config
+await db.connect()
+await db.init()
+const { router } = await import("./src/router/index.js")
 
 app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));

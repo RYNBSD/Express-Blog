@@ -11,6 +11,7 @@ declare global {
             PORT: number | `${number}`;
             NODE_ENV: "production" | "development";
             JWT_SECRET: string;
+            SESSION_SECRET: string;
 
             DB_DATABASE: string;
             DB_USERNAME: string;

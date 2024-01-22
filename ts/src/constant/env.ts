@@ -15,4 +15,7 @@ export const ENV = {
     JWT: {
         SECRET: process.env.JWT_SECRET,
     },
+    SESSION: {
+        SECRET: process.env.SESSION_SECRET,
+    },
 } as const;
