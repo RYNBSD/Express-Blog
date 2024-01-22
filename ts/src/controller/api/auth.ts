@@ -63,7 +63,7 @@ export const auth = {
 
         const { jwt } = util;
         const newToken = jwt.sign(user.dataValues.id);
-        req.session.user = { id: user.dataValues.id }
+        req.session.user = { id: user.dataValues.id };
 
         res.status(StatusCodes.OK)
             .setHeader(
@@ -126,8 +126,5 @@ export const auth = {
             .json({
                 user: user.dataValues,
             });
-    },
-    async forgotPassword(_req: Request, res: Response) {
-        res.status(StatusCodes.OK);
     },
 } as const;

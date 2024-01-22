@@ -1,5 +1,4 @@
-const [{ access }, { bcrypt }, { csrf }, { jwt }, fn] = await Promise.all([
-    import("./access.js"),
+const [{ bcrypt }, { csrf }, { jwt }, fn] = await Promise.all([
     import("./bcrypt.js"),
     import("./csrf.js"),
     import("./jwt.js"),
@@ -7,7 +6,6 @@ const [{ access }, { bcrypt }, { csrf }, { jwt }, fn] = await Promise.all([
 ]);
 
 export const util = {
-    access,
     bcrypt,
     csrf,
     jwt,
