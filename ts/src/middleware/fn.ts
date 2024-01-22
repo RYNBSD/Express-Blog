@@ -27,21 +27,20 @@ export async function hasUserRegistered(
         return next("Invalid session user id");
     }
 
-    if (userId === sessionUserId) {
-        const { User } = model.db;
-        const user = await User.findByPk(userId, {
-            plain: true,
-            limit: 1,
-        });
+    if (userId !== sessionUserId) throw new Error("Invalid User Id");
 
-        if (user instanceof User) {
-            res.locals.user = user;
-            return next();
-        }
-        req.session.user = { id: "" };
-        return next("User not found");
+    const { User } = model.db;
+    const user = await User.findByPk(userId, {
+        plain: true,
+        limit: 1,
+    });
+
+    if (user instanceof User) {
+        res.locals.user = user;
+        return next();
     }
-    throw new Error("Invalid User Id");
+    req.session.user = { id: "" };
+    return next("User not found");
 }
 
 /**
@@ -72,10 +71,11 @@ export async function hasUserUnregistered(
     if (user === null) throw new Error("User not found");
 
     const sessionUserId = req.session.user?.id ?? "";
-    if (sessionUserId.length === 0) throw next("User id not stored in session");
+    if (sessionUserId.length === 0)
+        return next("User id not stored in session");
     if (userId !== sessionUserId) {
         req.session.user = { id: "" };
-        throw next(
+        return next(
             "User is logged in, in client and not unknown for the server"
         );
     }
