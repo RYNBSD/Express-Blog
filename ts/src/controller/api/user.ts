@@ -27,7 +27,7 @@ export const user = {
             })
             .end();
     },
-    async blogs(_req: Request, res: Response, next: NextFunction) {
+    async blogs(_: Request, res: Response, next: NextFunction) {
         const { User } = model.db;
         const { user } = res.locals;
         if (!(user instanceof User)) return next("Invalid local user");

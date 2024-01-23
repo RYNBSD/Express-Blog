@@ -3,6 +3,7 @@ import { util } from "../../util/index.js";
 import { config } from "../../config/index.js";
 import { controller } from "../../controller/index.js";
 import { middleware } from "../../middleware/index.js";
+import { KEYS } from "../../constant/index.js";
 
 export const auth = Router();
 
@@ -14,7 +15,7 @@ auth.post(
     "/sign-up",
     handleAsync(middleware.hasUserUnregistered),
     handleAsync(middleware.security.csrf),
-    upload.single("picture"),
+    upload.single(KEYS.GLOBAL.PICTURE),
     handleAsync(api.auth.signUp)
 );
 

@@ -11,5 +11,6 @@ export const KEYS = {
     },
     GLOBAL: {
         PUBLIC: "public",
+        PICTURE: "picture"
     },
 } as const
