@@ -6,4 +6,4 @@ const [db, { req }] = await Promise.all([
 export const schema = {
     db,
     req,
-};
+} as const;
