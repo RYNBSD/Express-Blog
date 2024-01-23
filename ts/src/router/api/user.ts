@@ -6,6 +6,6 @@ user.get("/:userId/info");
 
 user.get("/:userId/blogs");
 
-user.put("/:userId");
+user.put("/");
 
-user.delete("/:userId");
+user.delete("/");
