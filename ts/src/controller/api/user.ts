@@ -45,4 +45,15 @@ export const user = {
             })
             .end();
     },
+    async update() {
+
+    },
+    async delete(_: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
+
+        await user.destroy({ force: true });
+        res.status(StatusCodes.OK).end();
+    },
 } as const;

@@ -7,6 +7,6 @@ export const user = {
         Params: Params.userId
     },
     Blogs: {
-
+        
     }
 } as const
