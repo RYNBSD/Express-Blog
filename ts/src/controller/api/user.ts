@@ -77,6 +77,19 @@ export const user = {
         const { user } = res.locals;
         if (!(user instanceof User)) return next("Invalid local user");
 
+        const userId = user.dataValues.id
+        const images = await sequelize.query<{ image: string }>(``, {
+            type: QueryTypes.SELECT,
+            raw: true,
+            bind: {
+                userId
+            }
+        })
+
+        const { FileUploader } = lib.file
+        const uris = images.map(image => image.image)
+        await FileUploader.remove(...uris)
+
         await user.destroy({ force: true });
         res.status(StatusCodes.OK).end();
     },
