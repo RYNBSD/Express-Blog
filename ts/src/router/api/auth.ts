@@ -22,6 +22,7 @@ auth.post(
     "/sign-in",
     handleAsync(middleware.hasUserUnregistered),
     handleAsync(middleware.security.csrf),
+    upload.none(),
     handleAsync(api.auth.signIn)
 );
 

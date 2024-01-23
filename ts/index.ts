@@ -27,6 +27,7 @@ app.use(timeout("5s"));
 app.use(responseTime());
 app.use(cors());
 app.use(rateLimit());
+app.use(compression());
 
 global.IS_PRODUCTION = ENV.NODE.ENV === "production";
 global.__filename = fileURLToPath(import.meta.url);
@@ -42,7 +43,6 @@ if (!IS_PRODUCTION) {
 app.use(morgan(IS_PRODUCTION ? "combined" : "dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(compression());
 app.use(cookieParser());
 app.use(helmet());
 app.use(hpp());
