@@ -77,18 +77,27 @@ export const user = {
         const { user } = res.locals;
         if (!(user instanceof User)) return next("Invalid local user");
 
-        const userId = user.dataValues.id
-        const images = await sequelize.query<{ image: string }>(``, {
-            type: QueryTypes.SELECT,
-            raw: true,
-            bind: {
-                userId
+        const userId = user.dataValues.id;
+        const images = await sequelize.query<{ image: string }>(
+            `
+            SELECT bi.image 
+            FROM "user" u
+            INNER JOIN blog b ON b."bloggerId" = u.id
+            INNER JOIN "blogImages" bi ON bi."blogId" = b.id
+            WHERE u.id = '94dce27a-d1b5-4f4e-9fa4-f2c3087e2d23';
+        `,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+                bind: {
+                    userId,
+                },
             }
-        })
+        );
 
-        const { FileUploader } = lib.file
-        const uris = images.map(image => image.image)
-        await FileUploader.remove(...uris)
+        const { FileUploader } = lib.file;
+        const uris = images.map((image) => image.image);
+        await FileUploader.remove(...uris);
 
         await user.destroy({ force: true });
         res.status(StatusCodes.OK).end();
