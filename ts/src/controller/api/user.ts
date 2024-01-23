@@ -3,6 +3,7 @@ import { QueryTypes } from "sequelize";
 import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
 import { schema } from "../../schema/index.js";
+import { lib } from "../../lib/index.js";
 
 export const user = {
     async info(req: Request, res: Response) {
@@ -45,8 +46,31 @@ export const user = {
             })
             .end();
     },
-    async update() {
+    async update(req: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
 
+        const { Update } = schema.req.user;
+        const { username, email } = Update.parse(req.body);
+
+        let newPicture = user.dataValues.picture as string;
+        const picture = req.file;
+        if (picture !== undefined) {
+            const { FileConverter, FileUploader } = lib.file;
+
+            const converted = await new FileConverter(picture.buffer).convert();
+            if (converted.length === 0) throw new Error("Invalid picture");
+
+            const uploaded = await new FileUploader(...converted).upload();
+            if (uploaded.length === 0) return next("Can't upload picture");
+
+            await FileUploader.remove(newPicture);
+            newPicture = uploaded[0]!;
+        }
+
+        await user.update({ username, email, picture: newPicture });
+        res.status(StatusCodes.OK).end();
     },
     async delete(_: Request, res: Response, next: NextFunction) {
         const { User } = model.db;

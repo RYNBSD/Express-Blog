@@ -28,9 +28,14 @@ export class FileUploader {
         );
     }
 
-    static async remove(...paths: string[]) {
+    static async remove(...uris: string[]) {
         await Promise.all(
-            paths.map(async (path) => await rm(path, { force: true }))
+            uris.map(
+                async (uri) =>
+                    await rm(path.join(__root, KEYS.GLOBAL.PUBLIC, uri), {
+                        force: true,
+                    })
+            )
         );
     }
 }
