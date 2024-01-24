@@ -1,11 +1,9 @@
-const [{ auth }, { user }, { security }] = await Promise.all([
-    import("./auth.js"),
-    import("./user.js"),
+const [{ api }, { security }] = await Promise.all([
+    import("./api/index.js"),
     import("./security/index.js")
 ]);
 
 export const req = {
-    auth,
-    user,
+    api,
     security
 } as const;

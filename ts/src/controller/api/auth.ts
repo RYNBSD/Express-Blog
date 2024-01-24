@@ -20,7 +20,7 @@ export const auth = {
         const uploaded = await new FileUploader(...converted).upload();
         if (uploaded.length === 0) throw new Error("Can't save picture");
 
-        const { SignUp } = schema.req.auth;
+        const { SignUp } = schema.req.api.auth;
         const { username, email, password } = SignUp.parse(req.body);
 
         const { bcrypt } = util;
@@ -40,7 +40,7 @@ export const auth = {
         res.status(StatusCodes.CREATED).end();
     },
     async signIn(req: Request, res: Response) {
-        const { SignIn } = schema.req.auth;
+        const { SignIn } = schema.req.api.auth;
         const { email, password } = SignIn.parse(req.body);
 
         const { User } = model.db;
@@ -134,7 +134,7 @@ export const auth = {
         const { User } = model.db;
         if (!(user instanceof User)) return next("Invalid local user");
 
-        const { ForgotPassword } = schema.req.auth;
+        const { ForgotPassword } = schema.req.api.auth;
         const { password } = ForgotPassword.parse(req.body);
 
         const { bcrypt } = util;

@@ -9,7 +9,7 @@ export const user = {
     async info(req: Request, res: Response) {
         const {
             Info: { Params },
-        } = schema.req.user;
+        } = schema.req.api.user;
 
         const { userId } = Params.parse(req.params);
 
@@ -51,7 +51,7 @@ export const user = {
         const { user } = res.locals;
         if (!(user instanceof User)) return next("Invalid local user");
 
-        const { Update } = schema.req.user;
+        const { Update } = schema.req.api.user;
         const { username, email } = Update.parse(req.body);
 
         let newPicture = user.dataValues.picture as string;

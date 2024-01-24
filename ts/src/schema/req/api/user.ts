@@ -1,5 +1,5 @@
-import { User } from "../db.js";
-import { definitions } from "../def.js";
+import { User } from "../../db.js";
+import { definitions } from "../../def.js";
 
 const { Params } = definitions;
 

@@ -1,4 +1,4 @@
-import { User } from "../db.js";
+import { User } from "../../db.js";
 
 export const auth = {
     SignUp: User.omit({ id: true, picture: true }),
