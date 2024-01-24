@@ -4,6 +4,7 @@ export const KEYS = {
             CSRF: "X-CSRF-Token",
             JWT: "X-JWT-Token",
             USER_ID: "X-User-Id",
+            ACCESS_TOKEN: "Access-Token",
         },
     },
     COOKIE: {
