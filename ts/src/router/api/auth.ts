@@ -38,3 +38,9 @@ auth.post(
     handleAsync(middleware.hasUserUnregistered),
     handleAsync(api.auth.me)
 );
+
+auth.put(
+    "/forgot-password",
+    handleAsync(middleware.security.csrf),
+    handleAsync(middleware.hasUserUnregistered)
+);

@@ -129,4 +129,11 @@ export const auth = {
             })
             .end();
     },
+    async forgotPassword(req: Request, res: Response) {
+        const { password, newPassword } = req.body;
+
+        if (password !== newPassword) throw new Error("Password Not equals");
+
+        res.status(StatusCodes.OK).end();
+    },
 } as const;
