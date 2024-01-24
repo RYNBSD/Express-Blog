@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { serialize } from "cookie";
 import { schema } from "../../schema/index.js";
@@ -129,12 +129,18 @@ export const auth = {
             })
             .end();
     },
-    async forgotPassword(req: Request, res: Response) {
-        const { password, newPassword } = req.body;
+    async forgotPassword(req: Request, res: Response, next: NextFunction) {
+        const { user } = res.locals;
+        const { User } = model.db;
+        if (!(user instanceof User)) return next("Invalid local user");
 
-        if (password !== newPassword) throw new Error("Password Not equals");
+        const { ForgotPassword } = schema.req.auth;
+        const { password } = ForgotPassword.parse(req.body);
 
-        
+        const { bcrypt } = util;
+        const hash = bcrypt.hash(password);
+
+        await user.update({ password: hash });
 
         res.status(StatusCodes.OK).end();
     },
