@@ -18,4 +18,8 @@ export const ENV = {
     SESSION: {
         SECRET: process.env.SESSION_SECRET,
     },
+    MAIL: {
+        USER: process.env.MAIL_USER,
+        PASS: process.env.MAIL_PASS,
+    },
 } as const;

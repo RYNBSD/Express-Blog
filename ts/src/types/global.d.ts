@@ -17,6 +17,9 @@ declare global {
             DB_USERNAME: string;
             DB_PASSWORD: string;
             DB_HOST: string;
+
+            MAIL_USER: string;
+            MAIL_PASS: string;
         }
     }
 }
