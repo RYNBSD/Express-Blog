@@ -134,6 +134,8 @@ export const auth = {
 
         if (password !== newPassword) throw new Error("Password Not equals");
 
+        
+
         res.status(StatusCodes.OK).end();
     },
 } as const;
