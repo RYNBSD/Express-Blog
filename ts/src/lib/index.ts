@@ -1,6 +1,7 @@
-const [{ FileConverter }, { FileUploader }] = await Promise.all([
+const [{ FileConverter }, { FileUploader }, { Mail }] = await Promise.all([
     import("./file/converter.js"),
     import("./file/uploader.js"),
+    import("./mail.js"),
 ]);
 
 export const lib = {
@@ -8,4 +9,5 @@ export const lib = {
         FileConverter,
         FileUploader,
     },
+    Mail,
 };
