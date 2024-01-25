@@ -1,19 +1,43 @@
 import { Router } from "express";
+import { util } from "../../util/index.js";
+import { middleware } from "../../middleware/index.js";
 
-export const blog = Router()
+export const blog = Router();
 
-blog.get("/all")
+const { handleAsync } = util;
 
-blog.get("/:blogId")
+blog.get("/all", handleAsync(middleware.hasUserUnregistered));
 
-blog.get("/:blogId/likes")
+blog.get("/:blogId", handleAsync(middleware.hasUserUnregistered));
 
-blog.get("/:blogId/comments")
+blog.get("/:blogId/likes", handleAsync(middleware.hasUserUnregistered));
 
-blog.patch("/like")
+blog.get("/:blogId/comments", handleAsync(middleware.hasUserUnregistered));
 
-blog.post("/")
+blog.patch("/like", handleAsync(middleware.hasUserUnregistered));
 
-blog.put("/:blogId")
+blog.post(
+    "/",
+    handleAsync(middleware.security.csrf),
+    handleAsync(middleware.hasUserRegistered)
+);
 
-blog.delete("/:blogId")
+blog.post(
+    "/:blogId/comment",
+    handleAsync(middleware.security.csrf),
+    handleAsync(middleware.hasUserRegistered)
+);
+
+blog.put(
+    "/:blogId",
+    handleAsync(middleware.security.csrf),
+    handleAsync(middleware.hasUserRegistered)
+);
+
+blog.put(
+    "/:blogId/:commentId",
+    handleAsync(middleware.security.csrf),
+    handleAsync(middleware.hasUserRegistered)
+);
+
+blog.delete("/:blogId", handleAsync(middleware.hasUserRegistered));
