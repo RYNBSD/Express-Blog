@@ -14,7 +14,7 @@ blog.get("/:blogId/likes", handleAsync(middleware.hasUserUnregistered));
 
 blog.get("/:blogId/comments", handleAsync(middleware.hasUserUnregistered));
 
-blog.patch("/like", handleAsync(middleware.hasUserUnregistered));
+blog.patch("/:blogId/like", handleAsync(middleware.hasUserRegistered));
 
 blog.post(
     "/",
@@ -31,13 +31,25 @@ blog.post(
 blog.put(
     "/:blogId",
     handleAsync(middleware.security.csrf),
-    handleAsync(middleware.hasUserRegistered)
+    handleAsync(middleware.hasUserRegistered),
+    handleAsync(middleware.api.blog.isBlogOwner)
 );
 
 blog.put(
     "/:blogId/:commentId",
     handleAsync(middleware.security.csrf),
-    handleAsync(middleware.hasUserRegistered)
+    handleAsync(middleware.hasUserRegistered),
+    handleAsync(middleware.api.blog.isCommentOwner)
 );
 
-blog.delete("/:blogId", handleAsync(middleware.hasUserRegistered));
+blog.delete(
+    "/:blogId",
+    handleAsync(middleware.hasUserRegistered),
+    handleAsync(middleware.api.blog.isBlogOwner)
+);
+
+blog.delete(
+    "/:blogId/:commentId",
+    handleAsync(middleware.hasUserRegistered),
+    handleAsync(middleware.api.blog.isCommentOwner)
+);
