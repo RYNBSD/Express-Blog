@@ -11,17 +11,20 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { StatusCodes } from "http-status-codes";
 import responseTime from "response-time";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import cookieEncrypt from "cookie-encrypter"
 import { ENV, KEYS, VALUES } from "./src/constant/index.js";
 import { config } from "./src/config/index.js";
 import { fileURLToPath } from "url";
 import path from "path";
 
 const app = express();
+app.set("env", ENV.NODE.ENV);
 app.disable("x-powered-by");
 app.disable("trust proxy");
+app.disable("view cache");
 app.enable("json escape");
-app.enable("view cache");
-app.set("env", ENV.NODE.ENV);
 
 app.use(timeout("5s"));
 app.use(responseTime());
@@ -43,7 +46,8 @@ if (!IS_PRODUCTION) {
 app.use(morgan(IS_PRODUCTION ? "combined" : "dev"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser(ENV.COOKIE.SECRET));
+app.use(cookieEncrypt(ENV.COOKIE.SECRET))
 app.use(helmet());
 app.use(hpp());
 app.use(
@@ -66,8 +70,11 @@ await db.connect();
 const { router } = await import("./src/router/index.js");
 await db.init();
 
+// Main Routers
 app.use("/", router);
 app.use(express.static(path.join(__root, KEYS.GLOBAL.PUBLIC)));
+
+// Error handlers
 app.use("*", (_, res) => res.status(StatusCodes.NOT_FOUND));
 app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) =>
     res
@@ -84,10 +91,7 @@ process.on("unhandledRejection", (error) => {
 
 process.on("uncaughtException", async (error) => {
     console.error(error);
-
-    const { db } = config;
     await db.close();
-
     process.exit(1);
 });
 

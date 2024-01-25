@@ -10,6 +10,7 @@ declare global {
         interface ProcessEnv {
             PORT: number | `${number}`;
             NODE_ENV: "production" | "development";
+            COOKIE_SECRET: string;
             JWT_SECRET: string;
             SESSION_SECRET: string;
 

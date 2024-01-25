@@ -12,6 +12,9 @@ export const ENV = {
         DB_PASSWORD: process.env.DB_PASSWORD,
         DB_HOST: process.env.DB_HOST,
     },
+    COOKIE: {
+        SECRET: process.env.COOKIE_SECRET,
+    },
     JWT: {
         SECRET: process.env.JWT_SECRET,
     },
