@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
+import { lib } from "../../lib/index.js";
 
 export const blog = {
     async all(req: Request, res: Response) {
@@ -30,7 +31,26 @@ export const blog = {
     async updateComment(req: Request, res: Response) {
         res.status(StatusCodes.OK).end();
     },
-    async deleteBlog(req: Request, res: Response) {
+    async deleteBlog(_: Request, res: Response, next: NextFunction) {
+        const { Blog } = model.db;
+        const { blog } = res.locals;
+        if (!(blog instanceof Blog)) return next("Invalid local blog");
+
+        const { id: blogId } = blog.dataValues;
+        const { BlogImages } = model.db;
+        const images = await BlogImages.findAll({
+            attributes: ["image"],
+            where: { blogId },
+        });
+
+        const uris = images.map((image) => image.dataValues.image);
+        const { FileUploader } = lib.file;
+
+        await Promise.all([
+            FileUploader.remove(...uris),
+            blog.destroy({ force: true }),
+        ]);
+
         res.status(StatusCodes.OK).end();
     },
     async deleteComment(_: Request, res: Response, next: NextFunction) {
