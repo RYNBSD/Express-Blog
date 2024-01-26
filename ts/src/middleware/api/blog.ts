@@ -16,14 +16,14 @@ export const blog = {
         const { id: userId } = user.dataValues;
         const { Blog } = model.db;
 
-        const isOwner = await Blog.findOne({
-            attributes: ["id"],
+        const blog = await Blog.findOne({
             where: { id: blogId, bloggerId: userId },
             limit: 1,
             plain: true,
         });
-        if (isOwner === null) throw new Error("Not Blog Owner");
+        if (blog === null) throw new Error("Not Blog Owner");
 
+        res.locals.blog = blog;
         return next();
     },
     async isCommentOwner(req: Request, res: Response, next: NextFunction) {
@@ -39,14 +39,16 @@ export const blog = {
         const { id: userId } = user.dataValues;
         const { BlogComments } = model.db;
 
-        const isOwner = await BlogComments.findOne({
+        const comment = await BlogComments.findOne({
             attributes: ["id"],
             where: { id: commentId, blogId, commenterId: userId },
             limit: 1,
             plain: true,
         });
-        if (isOwner === null) throw new Error("Not Comment Owner");
+        if (comment === null) throw new Error("Not Comment Owner");
 
+
+        res.locals.comment = comment;
         return next();
     },
 } as const;
