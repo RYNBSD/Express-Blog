@@ -2,11 +2,13 @@ import { Router } from "express";
 import { util } from "../../util/index.js";
 import { middleware } from "../../middleware/index.js";
 import { controller } from "../../controller/index.js";
+import { config } from "../../config/index.js";
 
 export const blog = Router();
 
 const { handleAsync } = util;
 const { api } = controller;
+const { upload } = config
 
 blog.get(
     "/all",
@@ -42,6 +44,7 @@ blog.post(
     "/",
     handleAsync(middleware.security.csrf),
     handleAsync(middleware.hasUserRegistered),
+    upload.array("images"),
     handleAsync(api.blog.createBlog)
 );
 
