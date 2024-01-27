@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
 import { lib } from "../../lib/index.js";
+import { schema } from "../../schema/index.js";
 
 export const blog = {
     async all(req: Request, res: Response) {
@@ -22,7 +23,25 @@ export const blog = {
     async createBlog(req: Request, res: Response) {
         res.status(StatusCodes.CREATED).end();
     },
-    async createComment(req: Request, res: Response) {
+    async createComment(req: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
+
+        const { id: userId } = user.dataValues;
+
+        const { Params, Body } = schema.req.api.blog.CreateComment
+        const { blogId } = Params.parse(req.params);
+
+        const { comment } = Body.parse(req.body);
+
+        const { BlogComments } = model.db;
+
+        await BlogComments.create(
+            { comment, blogId, commenterId: userId },
+            { fields: ["comment", "blogId", "commenterId"] }
+        );
+
         res.status(StatusCodes.CREATED).end();
     },
     async updateBlog(req: Request, res: Response) {
