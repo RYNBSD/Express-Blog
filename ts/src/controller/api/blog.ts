@@ -17,8 +17,32 @@ export const blog = {
     async blogComments(req: Request, res: Response) {
         res.status(StatusCodes.OK).end();
     },
-    async like(req: Request, res: Response) {
-        res.status(StatusCodes.OK).end();
+    async like(req: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
+
+        const { Params } = schema.req.api.blog.Like
+        const { blogId } = Params.parse(req.params);
+
+        const { id: userId } = user.dataValues;
+        const { BlogLikes } = model.db;
+
+        const [_, created] = await BlogLikes.findOrCreate({
+            attributes: ["id"],
+            where: { likerId: userId, blogId },
+            limit: 1,
+            plain: true,
+        });
+
+        if (!created) {
+            await BlogLikes.destroy({
+                where: { likerId: userId, blogId },
+                force: true,
+            });
+        }
+
+        res.status(created ? StatusCodes.CREATED : StatusCodes.OK).end();
     },
     async createBlog(req: Request, res: Response, next: NextFunction) {
         const { User } = model.db;
@@ -52,8 +76,8 @@ export const blog = {
             { title, description, bloggerId: userId },
             { fields: ["title", "description", "bloggerId"] }
         );
-        const { id: blogId } = blog.dataValues;
 
+        const { id: blogId } = blog.dataValues;
         const promises = uploadedImages.map(
             async (image) =>
                 await BlogImages.create(
