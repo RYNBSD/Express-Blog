@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
 import { lib } from "../../lib/index.js";
 import { schema } from "../../schema/index.js";
+import { Op } from "sequelize";
 
 export const blog = {
     async all(req: Request, res: Response) {
@@ -110,7 +111,71 @@ export const blog = {
 
         res.status(StatusCodes.CREATED).end();
     },
-    async updateBlog(req: Request, res: Response) {
+    async updateBlog(req: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
+
+        const { Body, Params } = schema.req.api.blog.UpdateBlog;
+        const { title, description, deletedImages } = Body.parse(req.body);
+        const { blogId } = Params.parse(req.params);
+
+        const images = req.files;
+        if (!(images instanceof Array)) throw new Error("Invalid images");
+
+        let uploadedImages: string[] = [];
+        if (images.length > 0) {
+            const { FileConverter, FileUploader } = lib.file;
+            const buffers = images.map((image) => image.buffer);
+
+            const converted = await new FileConverter(...buffers).convert();
+            if (converted.length === 0) throw new Error("Invalid image type");
+
+            const uploaded = await new FileUploader(...converted).upload();
+            if (uploaded.length === 0) return next("Can't upload your images");
+
+            uploadedImages = uploaded;
+        }
+
+        const { BlogImages, Blog } = model.db;
+
+        const promises = {
+            deletedImagesUri: deletedImages.map((id) =>
+                BlogImages.findByPk(id, {
+                    attributes: ["image"],
+                    limit: 1,
+                    plain: true,
+                })
+            ),
+            imageDeletion: BlogImages.destroy({
+                where: { [Op.or]: { id: deletedImages } },
+                force: true,
+            }),
+            imageInsertion: uploadedImages.map((image) =>
+                BlogImages.create({ blogId, image })
+            ),
+            updateBlog: Blog.update(
+                { title, description },
+                { where: { id: blogId } }
+            ),
+        } as const;
+
+        const imagesUri = await Promise.all(promises.deletedImagesUri);
+
+        const uris: string[] = imagesUri
+            .filter((image) => image !== null)
+            .map((image) => image!.dataValues.image);
+
+        const { FileUploader } = lib.file;
+        const removeImages = FileUploader.remove(...uris);
+
+        await Promise.all([
+            removeImages,
+            promises.imageDeletion,
+            ...promises.imageInsertion,
+            promises.updateBlog,
+        ]);
+
         res.status(StatusCodes.OK).end();
     },
     async updateComment(req: Request, res: Response, next: NextFunction) {
