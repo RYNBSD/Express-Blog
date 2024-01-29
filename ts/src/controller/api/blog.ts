@@ -22,7 +22,7 @@ export const blog = {
         const { user } = res.locals;
         if (!(user instanceof User)) return next("Invalid local user");
 
-        const { Params } = schema.req.api.blog.Like
+        const { Params } = schema.req.api.blog.Like;
         const { blogId } = Params.parse(req.params);
 
         const { id: userId } = user.dataValues;
@@ -113,7 +113,23 @@ export const blog = {
     async updateBlog(req: Request, res: Response) {
         res.status(StatusCodes.OK).end();
     },
-    async updateComment(req: Request, res: Response) {
+    async updateComment(req: Request, res: Response, next: NextFunction) {
+        const { User } = model.db;
+        const { user } = res.locals;
+        if (!(user instanceof User)) return next("Invalid local user");
+
+        const { Body, Params } = schema.req.api.blog.UpdateComment;
+        const { comment } = Body.parse(req.body);
+        const { blogId, commentId } = Params.parse(req.params);
+
+        const { id: userId } = user.dataValues;
+        const { BlogComments } = model.db;
+
+        await BlogComments.update(
+            { comment },
+            { where: { id: commentId, blogId, commenterId: userId } }
+        );
+
         res.status(StatusCodes.OK).end();
     },
     async deleteBlog(_: Request, res: Response, next: NextFunction) {

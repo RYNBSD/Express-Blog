@@ -21,4 +21,11 @@ export const blog = {
         Params: BlogId,
         Body: z.object({ comment: z.string().trim().min(1).max(255) }).strict(),
     },
+    UpdateBlog: {
+
+    },
+    UpdateComment: {
+        Body: z.object({ comment: z.string().trim().min(1).max(255) }).strict(),
+        Params: z.object({}).merge(BlogId).merge(CommentId).strict()
+    }
 } as const;

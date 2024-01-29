@@ -59,6 +59,7 @@ blog.put(
     "/:blogId",
     handleAsync(middleware.security.csrf),
     handleAsync(middleware.hasUserRegistered),
+    upload.array("images"),
     handleAsync(middleware.api.blog.isBlogOwner),
     handleAsync(api.blog.updateBlog)
 );
