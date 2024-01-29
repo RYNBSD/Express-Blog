@@ -1,22 +1,54 @@
 import type { NextFunction, Request, Response } from "express";
+import { Op, QueryTypes } from "sequelize";
 import { StatusCodes } from "http-status-codes";
 import { model } from "../../model/index.js";
 import { lib } from "../../lib/index.js";
 import { schema } from "../../schema/index.js";
-import { Op } from "sequelize";
 
 export const blog = {
     async all(req: Request, res: Response) {
-        res.status(StatusCodes.OK).end();
+        const blogs = await sequelize.query(``, {
+            type: QueryTypes.SELECT,
+            raw: true,
+        });
+
+        res.status(blogs.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK)
+            .json({ blogs })
+            .end();
     },
     async blog(req: Request, res: Response) {
-        res.status(StatusCodes.OK).end();
+        const blog = await sequelize.query(``, {
+            type: QueryTypes.SELECT,
+            plain: true,
+            raw: true,
+        });
+        if (blog === null) throw new Error("Blog not found");
+
+        res.status(StatusCodes.OK).json({ blog }).end();
     },
     async blogLikes(req: Request, res: Response) {
-        res.status(StatusCodes.OK).end();
+        const likers = await sequelize.query(``, {
+            type: QueryTypes.SELECT,
+            raw: true,
+        });
+
+        res.status(
+            likers.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK
+        )
+            .json({ likers })
+            .end();
     },
     async blogComments(req: Request, res: Response) {
-        res.status(StatusCodes.OK).end();
+        const commentators = await sequelize.query(``, {
+            type: QueryTypes.SELECT,
+            raw: true,
+        });
+
+        res.status(
+            commentators.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK
+        )
+            .json({ commentators })
+            .end();
     },
     async like(req: Request, res: Response, next: NextFunction) {
         const { User } = model.db;
