@@ -17,6 +17,8 @@ export const blog = {
         },
     },
     Blog: BlogId,
+    BlogLikes: BlogId,
+    BlogComments: BlogId,
     Like: {
         Params: BlogId,
     },

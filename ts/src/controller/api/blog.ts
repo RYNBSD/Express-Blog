@@ -27,7 +27,7 @@ export const blog = {
             .end();
     },
     async blog(req: Request, res: Response) {
-        const { Blog } = schema.req.api.blog
+        const { Blog } = schema.req.api.blog;
         const { blogId } = Blog.parse(req.params);
 
         const blog = await sequelize.query(
@@ -52,9 +52,13 @@ export const blog = {
         res.status(StatusCodes.OK).json({ blog }).end();
     },
     async blogLikes(req: Request, res: Response) {
+        const { BlogLikes } = schema.req.api.blog;
+        const { blogId } = BlogLikes.parse(req.params);
+
         const likers = await sequelize.query(``, {
             type: QueryTypes.SELECT,
             raw: true,
+            bind: { blogId },
         });
 
         res.status(
@@ -64,9 +68,13 @@ export const blog = {
             .end();
     },
     async blogComments(req: Request, res: Response) {
+        const { BlogComments } = schema.req.api.blog;
+        const { blogId } = BlogComments.parse(req.params);
+
         const commentators = await sequelize.query(``, {
             type: QueryTypes.SELECT,
             raw: true,
+            bind: { blogId },
         });
 
         res.status(
