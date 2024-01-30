@@ -9,7 +9,7 @@ export const blog = {
     async all(_: Request, res: Response) {
         const blogs = await sequelize.query(
             `
-            SELECT b.title, b.description, bi.image, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS commments FROM blog b
+            SELECT b.title, b.description, bi.image, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS comments FROM blog b
             INNER JOIN "user" u ON u."id" = b."bloggerId"
             INNER JOIN "blogLikes" bl ON bl."blogId" = b."id"
             INNER JOIN "blogComments" bc ON bc."blogId" = b."id"
@@ -27,11 +27,12 @@ export const blog = {
             .end();
     },
     async blog(req: Request, res: Response) {
-        const { blogId } = req.params;
+        const { Blog } = schema.req.api.blog
+        const { blogId } = Blog.parse(req.params);
 
         const blog = await sequelize.query(
             `
-            SELECT b.title, b.description, bi.image, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS commments FROM blog b
+            SELECT b.title, b.description, bi.image, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS comments FROM blog b
             INNER JOIN "user" u ON u."id" = b."bloggerId"
             INNER JOIN "blogLikes" bl ON bl."blogId" = b."id"
             INNER JOIN "blogComments" bc ON bc."blogId" = b."id"

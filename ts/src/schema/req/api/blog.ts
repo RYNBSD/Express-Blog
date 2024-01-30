@@ -16,6 +16,7 @@ export const blog = {
             Params: z.object({}).merge(BlogId).merge(CommentId).strict(),
         },
     },
+    Blog: BlogId,
     Like: {
         Params: BlogId,
     },
