@@ -34,13 +34,24 @@ export const user = {
 
         const { id: userId } = user.dataValues;
 
-        const blogs = await sequelize.query(``, {
-            type: QueryTypes.SELECT,
-            raw: true,
-            bind: {
-                userId,
-            },
-        });
+        const blogs = await sequelize.query(
+            `
+            SELECT b.title, b.description, bi.image, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS commments FROM blog b
+            INNER JOIN "user" u ON u."id" = b."bloggerId"
+            INNER JOIN "blogLikes" bl ON bl."blogId" = b."id"
+            INNER JOIN "blogComments" bc ON bc."blogId" = b."id"
+            INNER JOIN "blogImages" bi ON bi."blogId" = b."id"
+            WHERE u.id = '$userId'
+            GROUP BY b.title, b.description, bi.image, u.username, u.picture
+        `,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+                bind: {
+                    userId,
+                },
+            }
+        );
 
         res.status(blogs.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK)
             .json({
