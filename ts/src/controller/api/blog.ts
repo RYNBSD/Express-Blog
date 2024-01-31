@@ -78,11 +78,18 @@ export const blog = {
         const { BlogComments } = schema.req.api.blog;
         const { blogId } = BlogComments.parse(req.params);
 
-        const commentators = await sequelize.query(``, {
-            type: QueryTypes.SELECT,
-            raw: true,
-            bind: { blogId },
-        });
+        const commentators = await sequelize.query(
+            `
+            SELECT u.username, u.picture, bc.comment FROM "blogComments" bc
+            INNER JOIN "user" u ON u.id = bc."commenterId"
+            WHERE bc."blogId" = ':blogId'
+        `,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+                bind: { blogId },
+            }
+        );
 
         res.status(
             commentators.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK
