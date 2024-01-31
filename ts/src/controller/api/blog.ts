@@ -55,11 +55,18 @@ export const blog = {
         const { BlogLikes } = schema.req.api.blog;
         const { blogId } = BlogLikes.parse(req.params);
 
-        const likers = await sequelize.query(``, {
-            type: QueryTypes.SELECT,
-            raw: true,
-            bind: { blogId },
-        });
+        const likers = await sequelize.query(
+            `
+            SELECT u.username, u.picture FROM "blogLikes" bl
+            INNER JOIN "user" u ON u.id = bl."likerId"
+            WHERE bl."blogId"=':blogId'
+        `,
+            {
+                type: QueryTypes.SELECT,
+                raw: true,
+                bind: { blogId },
+            }
+        );
 
         res.status(
             likers.length === 0 ? StatusCodes.NO_CONTENT : StatusCodes.OK
