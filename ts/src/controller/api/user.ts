@@ -27,12 +27,9 @@ export const user = {
             })
             .end();
     },
-    async blogs(_: Request, res: Response, next: NextFunction) {
-        const { User } = model.db;
-        const { user } = res.locals;
-        if (!(user instanceof User)) return next("Invalid local user");
-
-        const { id: userId } = user.dataValues;
+    async blogs(req: Request, res: Response) {
+        const { Params } =  schema.req.api.user.Blogs
+        const { userId } = Params.parse(req.params);
 
         const blogs = await sequelize.query(
             `

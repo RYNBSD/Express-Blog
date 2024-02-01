@@ -7,6 +7,8 @@ export const user = {
     Info: {
         Params: Params.UserId,
     },
-    Blogs: {},
+    Blogs: {
+        Params: Params.UserId
+    },
     Update: User.omit({ id: true, picture: true, password: true }),
 } as const;
