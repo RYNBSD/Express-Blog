@@ -61,7 +61,7 @@ export const blog = {
             `
             SELECT u.username, u.picture FROM "blogLikes" bl
             INNER JOIN "user" u ON u.id = bl."likerId"
-            WHERE bl."blogId"=':blogId'
+            WHERE bl."blogId"= $blogId
         `,
             {
                 type: QueryTypes.SELECT,
@@ -84,7 +84,7 @@ export const blog = {
             `
             SELECT u.username, u.picture, bc.comment FROM "blogComments" bc
             INNER JOIN "user" u ON u.id = bc."commenterId"
-            WHERE bc."blogId" = ':blogId'
+            WHERE bc."blogId" = $blogId
         `,
             {
                 type: QueryTypes.SELECT,
