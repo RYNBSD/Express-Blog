@@ -33,13 +33,13 @@ export const user = {
 
         const blogs = await sequelize.query(
             `
-            SELECT b.title, b.description, ARRAY_AGG(bi.image) AS images, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS comments FROM blog b
+            SELECT b.id, b.title, b.description, ARRAY_AGG(bi.image) AS images, u.id AS "bloggerId", u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS comments FROM blog b
             LEFT JOIN "user" u ON u."id" = b."bloggerId"
             LEFT JOIN "blogLikes" bl ON bl."blogId" = b."id"
             LEFT JOIN "blogComments" bc ON bc."blogId" = b."id"
             LEFT JOIN "blogImages" bi ON bi."blogId" = b."id"
             WHERE u.id = $userId
-            GROUP BY b.title, b.description, u.username, u.picture
+            GROUP BY b.id, b.title, b.description, u.id, u.username, u.picture
         `,
             {
                 type: QueryTypes.SELECT,
