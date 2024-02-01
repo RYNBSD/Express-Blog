@@ -38,7 +38,7 @@ export const user = {
             INNER JOIN "blogLikes" bl ON bl."blogId" = b."id"
             INNER JOIN "blogComments" bc ON bc."blogId" = b."id"
             INNER JOIN "blogImages" bi ON bi."blogId" = b."id"
-            WHERE u.id = '$userId'
+            WHERE u.id = $userId
             GROUP BY b.title, b.description, u.username, u.picture
         `,
             {
