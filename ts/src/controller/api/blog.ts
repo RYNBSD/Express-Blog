@@ -9,11 +9,13 @@ export const blog = {
     async all(_: Request, res: Response) {
         const blogs = await sequelize.query(
             `
-            SELECT b.title, b.description, ARRAY_AGG(bi.image) AS images, u.username, u.picture, COUNT(bl.id) AS likes, COUNT(bc.id) AS comments FROM blog b
+            SELECT b.title, b.description, ARRAY_AGG(bi.image) AS images, u.username, u.picture,
+            COUNT(bl.id) AS likes, COUNT(bc.id) AS comments
+            FROM blog b
             INNER JOIN "user" u ON u."id" = b."bloggerId"
-            INNER JOIN "blogLikes" bl ON bl."blogId" = b."id"
-            INNER JOIN "blogComments" bc ON bc."blogId" = b."id"
             INNER JOIN "blogImages" bi ON bi."blogId" = b."id"
+            LEFT JOIN "blogLikes" bl ON bl."blogId" = b."id"
+            LEFT JOIN "blogComments" bc ON bc."blogId" = b."id"
             GROUP BY b.title, b.description, u.username, u.picture
         `,
             {
