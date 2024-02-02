@@ -4,7 +4,7 @@ import { Blog } from "../../db.js";
 const BlogId = z.object({ blogId: z.string().trim().uuid() }).strict();
 const CommentId = z.object({ commentId: z.number().min(1) }).strict();
 const DeletedImages = z
-    .object({ deletedImages: z.number().min(1).array() })
+    .object({ deletedImages: z.string().array().optional() })
     .strict();
 
 export const blog = {

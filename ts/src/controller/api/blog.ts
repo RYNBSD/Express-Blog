@@ -220,28 +220,15 @@ export const blog = {
 
         const { BlogImages, Blog } = model.db;
 
-        const promises = {
-            deletedImagesUri: deletedImages.map((id) =>
-                BlogImages.findByPk(id, {
-                    attributes: ["image"],
-                    limit: 1,
-                    plain: true,
-                })
-            ),
-            imageDeletion: BlogImages.destroy({
-                where: { [Op.or]: { id: deletedImages } },
-                force: true,
-            }),
-            imageInsertion: uploadedImages.map((image) =>
-                BlogImages.create({ blogId, image })
-            ),
-            updateBlog: Blog.update(
-                { title, description },
-                { where: { id: blogId } }
-            ),
-        } as const;
-
-        const imagesUri = await Promise.all(promises.deletedImagesUri);
+        const deletedImagesUri = deletedImages?.map((id) =>
+            BlogImages.findOne({
+                attributes: ["image"],
+                where: { id },
+                limit: 1,
+                plain: true,
+            })
+        );
+        const imagesUri = await Promise.all(deletedImagesUri ?? []);
 
         const uris: string[] = imagesUri
             .filter((image) => image !== null)
@@ -250,11 +237,28 @@ export const blog = {
         const { FileUploader } = lib.file;
         const removeImages = FileUploader.remove(...uris);
 
+        const imageDeletion =
+            deletedImages instanceof Array
+                ? BlogImages.destroy({
+                      where: { [Op.or]: { id: deletedImages } },
+                      force: true,
+                  })
+                : Promise.resolve();
+
+        const imageInsertion = uploadedImages.map((image) =>
+            BlogImages.create({ blogId, image })
+        );
+
+        const updateBlog = Blog.update(
+            { title, description },
+            { where: { id: blogId } }
+        );
+
         await Promise.all([
             removeImages,
-            promises.imageDeletion,
-            ...promises.imageInsertion,
-            promises.updateBlog,
+            imageDeletion,
+            ...imageInsertion,
+            updateBlog,
         ]);
 
         res.status(StatusCodes.OK).end();
