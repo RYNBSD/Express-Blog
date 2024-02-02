@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { util } from "../../util/index.js";
 import { KEYS } from "../../constant/index.js";
 import { model } from "../../model/index.js";
+import { schema } from "../../schema/index.js";
 
 export const security = {
     async csrf(req: Request, _res: Response, next: NextFunction) {
@@ -32,7 +33,8 @@ export const security = {
         const iv = req.session.access?.iv ?? "";
         if (iv.length === 0) return next("Unsaved access iv");
 
-        const { code } = req.body as { code: string };
+        const { Access } = schema.req.security.access.Middleware
+        const { code } = Access.parse(req.body);
         const { access } = util
 
         const hasAccess = access.verify(token, key, iv, code);
@@ -47,6 +49,7 @@ export const security = {
         });
         if (user === null) throw new Error("User not found");
 
+        delete req.body.code
         res.locals.user = user;
         return next();
     },
