@@ -220,14 +220,24 @@ export const blog = {
 
         const { BlogImages, Blog } = model.db;
 
-        const deletedImagesUri = deletedImages?.map((id) =>
-            BlogImages.findOne({
-                attributes: ["image"],
-                where: { id },
-                limit: 1,
-                plain: true,
-            })
-        );
+        const deletedImagesUri =
+            typeof deletedImages === "string"
+                ? [
+                      BlogImages.findOne({
+                          attributes: ["image"],
+                          where: { id: deletedImages },
+                          limit: 1,
+                          plain: true,
+                      }),
+                  ]
+                : deletedImages?.map((id) =>
+                      BlogImages.findOne({
+                          attributes: ["image"],
+                          where: { id },
+                          limit: 1,
+                          plain: true,
+                      })
+                  );
         const imagesUri = await Promise.all(deletedImagesUri ?? []);
 
         const uris: string[] = imagesUri

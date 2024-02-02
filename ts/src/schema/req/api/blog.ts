@@ -4,7 +4,9 @@ import { Blog } from "../../db.js";
 const BlogId = z.object({ blogId: z.string().trim().uuid() }).strict();
 const CommentId = z.object({ commentId: z.number().min(1) }).strict();
 const DeletedImages = z
-    .object({ deletedImages: z.string().array().optional() })
+    .object({
+        deletedImages: z.union([z.string().array(), z.string()]).optional(),
+    })
     .strict();
 
 export const blog = {
@@ -28,8 +30,10 @@ export const blog = {
         Body: z.object({ comment: z.string().trim().min(1).max(255) }).strict(),
     },
     UpdateBlog: {
-        Body: Blog.omit({ id: true, bloggerId: true }).merge(DeletedImages).strict(),
-        Params: BlogId
+        Body: Blog.omit({ id: true, bloggerId: true })
+            .merge(DeletedImages)
+            .strict(),
+        Params: BlogId,
     },
     UpdateComment: {
         Body: z.object({ comment: z.string().trim().min(1).max(255) }).strict(),
