@@ -1,6 +1,8 @@
 import { DataTypes } from "sequelize";
 import type { Tables } from "../types/index.js";
 
+const CASCADE = "CASCADE";
+
 export const User = sequelize.define<Tables["User"]>(
     "user",
     {
@@ -28,7 +30,7 @@ export const User = sequelize.define<Tables["User"]>(
     },
     {
         timestamps: true,
-        tableName: "user"
+        tableName: "user",
     }
 );
 
@@ -51,6 +53,7 @@ export const Blog = sequelize.define<Tables["Blog"]>(
         bloggerId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: User,
                 key: "id",
@@ -59,7 +62,7 @@ export const Blog = sequelize.define<Tables["Blog"]>(
     },
     {
         timestamps: true,
-        tableName: "blog"
+        tableName: "blog",
     }
 );
 
@@ -78,6 +81,7 @@ export const BlogImages = sequelize.define<Tables["BlogImages"]>(
         blogId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: Blog,
                 key: "id",
@@ -98,19 +102,21 @@ export const BlogLikes = sequelize.define<Tables["BlogLikes"]>(
         likerId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: User,
-                key: "id"
-            }
+                key: "id",
+            },
         },
         blogId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: Blog,
-                key: "id"
-            }
-        }
+                key: "id",
+            },
+        },
     },
     { createdAt: true, updatedAt: false, tableName: "blogLikes" }
 );
@@ -130,23 +136,25 @@ export const BlogComments = sequelize.define<Tables["BlogComments"]>(
         blogId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: Blog,
-                key: "id"
-            }
+                key: "id",
+            },
         },
         commenterId: {
             type: DataTypes.UUID,
             allowNull: false,
+            onDelete: CASCADE,
             references: {
                 model: User,
-                key: "id"
-            }
-        }
+                key: "id",
+            },
+        },
     },
     {
         timestamps: true,
-        tableName: "blogComments"
+        tableName: "blogComments",
     }
 );
 
@@ -170,10 +178,10 @@ export const Error = sequelize.define<Tables["Error"]>(
             type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false,
-        }
+        },
     },
     {
         timestamps: true,
-        tableName: "error"
+        tableName: "error",
     }
 );
