@@ -30,12 +30,14 @@ auth.post(
 auth.post(
     "/sign-out",
     handleAsync(middleware.hasUserRegistered),
+    upload.none(),
     handleAsync(api.auth.signOut)
 );
 
 auth.post(
     "/me",
     handleAsync(middleware.hasUserUnregistered),
+    upload.none(),
     handleAsync(api.auth.me)
 );
 
@@ -43,6 +45,7 @@ auth.put(
     "/forgot-password",
     handleAsync(middleware.security.csrf),
     handleAsync(middleware.hasUserUnregistered),
+    upload.none(),
     handleAsync(middleware.security.access),
     handleAsync(api.auth.forgotPassword)
 );

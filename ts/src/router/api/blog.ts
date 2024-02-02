@@ -52,6 +52,7 @@ blog.post(
     "/:blogId/comment",
     handleAsync(middleware.security.csrf),
     handleAsync(middleware.hasUserRegistered),
+    upload.none(),
     handleAsync(api.blog.createComment)
 );
 
@@ -68,6 +69,7 @@ blog.put(
     "/:blogId/:commentId",
     handleAsync(middleware.security.csrf),
     handleAsync(middleware.hasUserRegistered),
+    upload.none(),
     handleAsync(middleware.api.blog.isCommentOwner),
     handleAsync(api.blog.updateComment)
 );
