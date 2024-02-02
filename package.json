@@ -10,7 +10,8 @@
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "code:check": "yarn lint && tsc",
-        "code:push": "yarn code:check && git push -u origin main"
+        "code:push": "yarn code:check && git push -u origin main",
+        "build": "node esbuild.config.js"
     },
     "engines": {
         "node": "16.19.0"
@@ -71,6 +72,7 @@
         "@typescript-eslint/eslint-plugin": "^6.19.0",
         "@typescript-eslint/parser": "^6.19.0",
         "colors": "^1.4.0",
+        "esbuild": "^0.20.0",
         "eslint": "^8.56.0",
         "eslint-plugin-security": "^2.1.0",
         "nodemon": "^3.0.3",
