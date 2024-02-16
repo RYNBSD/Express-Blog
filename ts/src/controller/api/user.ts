@@ -94,7 +94,7 @@ export const user = {
             FROM "user" u
             INNER JOIN blog b ON b."bloggerId" = u.id
             INNER JOIN "blogImages" bi ON bi."blogId" = b.id
-            WHERE u.id = '94dce27a-d1b5-4f4e-9fa4-f2c3087e2d23';
+            WHERE u.id = $userId;
         `,
             {
                 type: QueryTypes.SELECT,
